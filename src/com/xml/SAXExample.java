@@ -1,3 +1,4 @@
+package com.xml;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -53,10 +54,5 @@ public class SAXExample {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String args[]) {
-        new SAXExample();
-        System.exit(0);
     }
 }
