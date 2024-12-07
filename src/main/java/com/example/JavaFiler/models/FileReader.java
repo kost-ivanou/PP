@@ -1,5 +1,10 @@
 package com.example.JavaFiler.models;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
+
 public interface FileReader {
-    void readFile(String filePath);
+    String readFile(MultipartFile file) throws IOException;
 }
