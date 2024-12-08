@@ -1,26 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Upload File</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-    </style>
+    <title>Загрузка файла</title>
+    <link rel = "stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>Загрузите файл для обработки</h1>
-
-<form id="uploadForm">
-    <input type="file" id="fileInput" name="file" required />
-    <button type="submit">Загрузить</button>
-</form>
-<div id="result"></div>
+<header>
+    <h1>Загрузите файл для обработки</h1>
+</header>
+<main>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" required />
+        <button type="submit">Загрузить</button>
+    </form>
+    <div id="result"></div>
+</main>
 <script src="/js/script.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('uploadForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Отменяем стандартное поведение формы
+        event.preventDefault();
 
         const formData = new FormData();
         const fileInput = document.getElementById('fileInput');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!response.ok) {
                     throw new Error('Ошибка при загрузке файла');
                 }
-                return response.blob(); // Получаем ответ как Blob
+                return response.blob();
             })
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);

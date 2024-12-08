@@ -41,7 +41,7 @@ public class FileController {
 
             String content = reader.readFile(file);
 
-            processedContent = expressionService.processExpressions(content); // Предполагается, что у вас есть метод для обработки
+            processedContent = expressionService.processExpressions(content);
 
             byte[] outputBytes = processedContent.getBytes(StandardCharsets.UTF_8);
 
@@ -51,6 +51,7 @@ public class FileController {
                     .contentType(contentType != null ? MediaType.parseMediaType(contentType) : MediaType.APPLICATION_OCTET_STREAM)
                     .body(outputBytes);
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки файла".getBytes(StandardCharsets.UTF_8));
         }
     }
