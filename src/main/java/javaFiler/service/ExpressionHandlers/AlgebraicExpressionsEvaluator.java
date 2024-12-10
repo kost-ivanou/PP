@@ -1,7 +1,13 @@
 package javaFiler.service.ExpressionHandlers;
 
-public class AlgebraicExpressionsEvaluator {
-    public static double eval(final String str){
+import javaFiler.models.ExpressionEvaluator;
+
+import java.text.DecimalFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class AlgebraicExpressionsEvaluator implements ExpressionEvaluator {
+    public double eval(final String str){
         return new Object() {
             int pos = -1, ch;
 
@@ -22,7 +28,12 @@ public class AlgebraicExpressionsEvaluator {
                 nextChar();
                 double x = parseExpression();
                 if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
-                return x;
+                if(x % 1 == 0){
+                    return (int)x;
+                }
+                else {
+                    return x;
+                }
             }
 
             double parseExpression() {
@@ -78,5 +89,28 @@ public class AlgebraicExpressionsEvaluator {
                 return x;
             }
         }.parse();
+    }
+    @Override
+    public String processExpressions(final String content){
+        String regex = "\\([^()]*\\)|\\d+[+\\-*/]\\d+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(content);
+
+        StringBuilder result = new StringBuilder();
+
+        while (matcher.find()) {
+            try {
+                String expression = matcher.group();
+                Object evaluatedResult = eval(expression);
+                DecimalFormat df = new DecimalFormat((Double)evaluatedResult % 1 == 0? "0" : "0.00");
+                matcher.appendReplacement(result, df.format(evaluatedResult));
+            } catch (Exception e) {
+                // В случае ошибки парсинга оставляем выражение как есть
+                matcher.appendReplacement(result, matcher.group());
+            }
+        }
+        matcher.appendTail(result);
+
+        return result.toString();
     }
 }

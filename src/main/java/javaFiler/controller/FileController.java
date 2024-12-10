@@ -41,7 +41,7 @@ public class FileController {
 
             String content = reader.readFile(file);
 
-            processedContent = expressionService.processExpressions(content);
+            processedContent = expressionService.evaluateExpressions(content);
 
             byte[] outputBytes = processedContent.getBytes(StandardCharsets.UTF_8);
 

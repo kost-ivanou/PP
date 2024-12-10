@@ -1,4 +1,10 @@
 package javaFiler.service.ExpressionHandlers;
 
-public class DijkstraExpressionEvaluator {
+import javaFiler.models.ExpressionEvaluator;
+
+public class DijkstraExpressionEvaluator implements ExpressionEvaluator {
+    @Override
+    public String processExpressions(final String str){
+        return str;
+    }
 }
