@@ -13,7 +13,7 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
     @Override
     public String processExpressions(final String str) {
         JexlEngine jexlEngine = new JexlBuilder().create();
-        String regex = "\\([^()]*\\)|\\d+[+\\-*/]\\d+";
+        String regex = "\\b(\\d+(\\.\\d+)?([+\\-*/]\\d+(\\.\\d+)?)*)\\b|\\(([^()]*|\\(([^()]*|\\([^()]*\\))*\\))*\\)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
 

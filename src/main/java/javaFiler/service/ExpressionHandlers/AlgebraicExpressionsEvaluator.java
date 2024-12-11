@@ -92,7 +92,7 @@ public class AlgebraicExpressionsEvaluator implements ExpressionEvaluator {
     }
     @Override
     public String processExpressions(final String content){
-        String regex = "\\([^()]*\\)|\\d+[+\\-*/]\\d+";
+        String regex = "\\b(\\d+(\\.\\d+)?([+\\-*/]\\d+(\\.\\d+)?)*)\\b|\\(([^()]*|\\(([^()]*|\\([^()]*\\))*\\))*\\)";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
 
