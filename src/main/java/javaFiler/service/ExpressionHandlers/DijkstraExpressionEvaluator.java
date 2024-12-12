@@ -98,7 +98,6 @@ public class DijkstraExpressionEvaluator implements ExpressionEvaluator {
                 DecimalFormat df = new DecimalFormat((Double)evaluatedResult % 1 == 0? "0" : "0.00");
                 matcher.appendReplacement(result, df.format(evaluatedResult));
             } catch (Exception e) {
-                // В случае ошибки парсинга оставляем выражение как есть
                 matcher.appendReplacement(result, matcher.group());
             }
         }

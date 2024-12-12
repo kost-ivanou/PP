@@ -26,7 +26,6 @@ public class JexlExpressionEvaluator implements ExpressionEvaluator {
                 Object evaluatedResult = jexlExpression.evaluate(new MapContext());
                 matcher.appendReplacement(result, evaluatedResult.toString());
             } catch (Exception e) {
-                // В случае ошибки парсинга оставляем выражение как есть
                 matcher.appendReplacement(result, matcher.group());
             }
         }

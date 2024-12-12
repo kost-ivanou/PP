@@ -30,12 +30,10 @@ public class FileController {
 
             StringProcessor expressionService = new StringProcessor();
 
-            FileReaderFactory factory;
-
             FileFactoryIdentifier fileFactoryIdentifier = new FileFactoryIdentifier();
 
-            factory = fileFactoryIdentifier.IdentifyType(file);
-            if(factory == null) return ResponseEntity.badRequest().body("Неподдерживаемый формат файла".getBytes(StandardCharsets.UTF_8));
+            FileReaderFactory factory = fileFactoryIdentifier.IdentifyType(file);
+            if(factory == null) return ResponseEntity.badRequest().body("Unsupported format".getBytes(StandardCharsets.UTF_8));
 
             FileReader reader = factory.createFileReader();
 
@@ -45,7 +43,6 @@ public class FileController {
 
             byte[] outputBytes = processedContent.getBytes(StandardCharsets.UTF_8);
 
-            // Устанавливаем заголовки ответа
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=\"processed_" + file.getOriginalFilename() + "\"")
                     .contentType(contentType != null ? MediaType.parseMediaType(contentType) : MediaType.APPLICATION_OCTET_STREAM)
