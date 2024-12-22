@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Загрузка файла</title>
-    <link rel = "stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <header>
@@ -12,6 +12,20 @@
 <main>
     <form id="uploadForm">
         <input type="file" id="fileInput" name="file" required />
+        <div>
+            <label>
+                <input type="radio" name="action" value="zip" checked />
+                Архивация ZIP
+            </label>
+            <label>
+                <input type="radio" name="action" value="rar" />
+                Архивация RAR
+            </label>
+            <label>
+                <input type="radio" name="action" value="encrypt" />
+                Шифровка
+            </label>
+        </div>
         <button type="submit">Загрузить</button>
     </form>
     <div id="result"></div>

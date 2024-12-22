@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData();
         const fileInput = document.getElementById('fileInput');
+        const action = document.querySelector('input[name="action"]:checked').value;
 
         if (fileInput.files.length > 0) {
             formData.append('file', fileInput.files[0]);
+            formData.append('action', action);
 
             fetch('/api/upload', {
                 method: 'POST',
@@ -23,10 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = 'processed_' + fileInput.files[0].name; // Имя для скачиваемого файла
+                a.download = 'processed_' + fileInput.files[0].name;
                 document.body.appendChild(a);
-                a.click(); // Имитируем клик для скачивания
-                window.URL.revokeObjectURL(url); // Освобождаем URL-объект
+                a.click();
+                window.URL.revokeObjectURL(url);
                 document.getElementById('result').innerText = 'Файл успешно загружен!';
             })
             .catch(error => {
