@@ -10,7 +10,7 @@ public class ZipFileProcessor implements FileProcessor {
     @Override
     public byte[] processFile(String content, String originalFilename) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream, StandardCharsets.UTF_8)) {
             ZipEntry zipEntry = new ZipEntry("processed_" + originalFilename);
             zipOutputStream.putNextEntry(zipEntry);
             zipOutputStream.write(content.getBytes(StandardCharsets.UTF_8));

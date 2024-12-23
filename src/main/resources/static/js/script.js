@@ -25,7 +25,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const a = document.createElement('a');
                 a.style.display = 'none';
                 a.href = url;
-                a.download = 'processed_' + fileInput.files[0].name;
+                const originalFilename = fileInput.files[0].name.replace(/(\.[^\.]+)$/, ''); // Убираем расширение
+                if (action === 'zip') {
+                    a.download = 'processed_' + originalFilename + '.zip';
+                } else if (action === 'rar') {
+                    a.download = 'processed_' + originalFilename + '.rar';
+                } else if (action === 'encrypt') {
+                    a.download = 'processed_' + originalFilename; // Шифрование без расширения
+                } else {
+                    a.download = 'processed_' + originalFilename; // Обработанный файл
+                }
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);

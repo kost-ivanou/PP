@@ -26,6 +26,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.apache.commons:commons-jexl3:3.2'
 	implementation 'net.objecthunter:exp4j:0.4.8'
+	implementation 'com.github.javaparser:javaparser-core:3.24.0'
+	implementation 'com.github.junrar:junrar:7.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 

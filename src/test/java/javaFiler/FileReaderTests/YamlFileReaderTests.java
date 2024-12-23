@@ -1,5 +1,6 @@
 package javaFiler.FileReaderTests;
 
+import com.github.junrar.exception.RarException;
 import javaFiler.service.FileReaders.YamlFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class YamlFileReaderTests {
     }
 
     @Test
-    public void testReadFile_Success() throws IOException {
+    public void testReadFile_Success() throws IOException, RarException {
 
         String content = "key: value\nanother_key: another_value";
         MultipartFile file = new MockMultipartFile("file", "test.yaml", "application/x-yaml", content.getBytes(StandardCharsets.UTF_8));

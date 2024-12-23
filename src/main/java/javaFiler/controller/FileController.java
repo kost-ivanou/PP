@@ -1,13 +1,11 @@
 package javaFiler.controller;
 
+import com.github.junrar.exception.RarException;
 import javaFiler.factory.FileReaderFactories.FileReaderFactory;
 import javaFiler.models.FileReader;
 import javaFiler.service.FileFactoryIdentifier;
 import javaFiler.service.StringProcessor;
-import javaFiler.strategy.EncryptFileProcessor;
-import javaFiler.strategy.FileProcessingContext;
-import javaFiler.strategy.RarFileProcessor;
-import javaFiler.strategy.ZipFileProcessor;
+import javaFiler.strategy.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +29,7 @@ public class FileController {
             @RequestParam("action") String action) {
         try {
             String processedContent;
+            String originalFilename = file.getOriginalFilename();
             String contentType = file.getContentType();
 
             StringProcessor expressionService = new StringProcessor();
@@ -44,29 +43,55 @@ public class FileController {
             String content = reader.readFile(file);
             processedContent = expressionService.evaluateExpressions(content);
             FileProcessingContext context = new FileProcessingContext();
+            byte[] outputBytes;
+            String archiveFilename;
 
             switch (action) {
                 case "zip":
                     context.setStrategy(new ZipFileProcessor());
-                    break;
+                    context.setContentType("application/zip");
+                    archiveFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".zip";
+                    outputBytes = context.executeStrategy(processedContent, originalFilename);
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=\"" + archiveFilename + "\"")
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .body(outputBytes);
                 case "rar":
                     context.setStrategy(new RarFileProcessor());
-                    break;
+                    context.setContentType("application/x-rar-compressed");
+                    archiveFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".rar";
+                    outputBytes = context.executeStrategy(processedContent, originalFilename);
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=\"" + archiveFilename + "\"")
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .body(outputBytes);
                 case "encrypt":
                     context.setStrategy(new EncryptFileProcessor());
-                    break;
+                    context.setContentType("application/octet-stream");
+                    archiveFilename = "processed_" + originalFilename;
+                    outputBytes = context.executeStrategy(processedContent, originalFilename);
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=\"" + archiveFilename + "\"")
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .body(outputBytes);
+                case "defaultFile":
+                    context.setStrategy(new DefaultFileProcessor());
+                    context.setContentType(contentType);
+                    outputBytes = context.executeStrategy(processedContent, originalFilename);
+                    return ResponseEntity.ok()
+                            .header("Content-Disposition", "attachment; filename=\"" + originalFilename + "\"")
+                            .contentType(MediaType.parseMediaType(contentType))
+                            .body(outputBytes);
                 default:
                     return ResponseEntity.badRequest().body("Invalid action".getBytes(StandardCharsets.UTF_8));
             }
 
-            byte[] outputBytes = context.executeStrategy(processedContent, file.getOriginalFilename());
-            return ResponseEntity.ok()
-                    .header("Content-Disposition", "attachment; filename=\"processed_" + file.getOriginalFilename() + "\"")
-                    .contentType(MediaType.valueOf(context.getContentType()))
-                    .body(outputBytes);
-
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки файла".getBytes(StandardCharsets.UTF_8));
+
+        } catch (RarException e) {
+            throw new RuntimeException(e);
         }
     }
 }

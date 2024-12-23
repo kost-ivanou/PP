@@ -1,5 +1,6 @@
 package javaFiler.FileReaderTests;
 
+import com.github.junrar.exception.RarException;
 import javaFiler.service.FileReaders.TxtFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class TxtFileReaderTests {
     }
 
     @Test
-    public void testReadFile_Success() throws IOException {
+    public void testReadFile_Success() throws IOException, RarException {
         String content = "Hello\r\nWorld\r\nThis is a test.";
         MultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", content.getBytes());
 

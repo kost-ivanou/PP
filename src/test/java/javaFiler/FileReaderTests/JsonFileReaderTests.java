@@ -1,5 +1,6 @@
 package javaFiler.FileReaderTests;
 
+import com.github.junrar.exception.RarException;
 import javaFiler.service.FileReaders.JsonFileReader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ public class JsonFileReaderTests {
     }
 
     @Test
-    public void testReadFile_Success() throws IOException {
+    public void testReadFile_Success() throws IOException, RarException {
         String content = "{\"key\":\"value\"}";
         MultipartFile file = new MockMultipartFile("file", "test.json", "application/json", content.getBytes(StandardCharsets.UTF_8));
 

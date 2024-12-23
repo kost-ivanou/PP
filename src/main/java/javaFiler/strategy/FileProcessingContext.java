@@ -5,6 +5,7 @@ import javaFiler.strategy.FileProcessor;
 import java.io.IOException;
 
 public class FileProcessingContext {
+    private String contentType;
     private FileProcessor fileProcessor;
 
     public void setStrategy(FileProcessor fileProcessor) {
@@ -16,6 +17,9 @@ public class FileProcessingContext {
     }
 
     public String getContentType() {
-        return fileProcessor.getContentType();
+        return contentType;
+    }
+    public void setContentType(String contentType){
+        this.contentType = contentType;
     }
 }

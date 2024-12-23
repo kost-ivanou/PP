@@ -1,5 +1,6 @@
 package javaFiler.FileReaderTests;
 
+import com.github.junrar.exception.RarException;
 import javaFiler.service.FileReaders.XmlFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class XmlFileReaderTests {
     }
 
     @Test
-    public void testReadFile_Success() throws IOException {
+    public void testReadFile_Success() throws IOException, RarException {
         String content = "<note><to>Tove</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
         MultipartFile file = new MockMultipartFile("file", "test.xml", "application/xml", content.getBytes(StandardCharsets.UTF_8));
 
