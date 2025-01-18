@@ -1,4 +1,4 @@
-package javaFiler.service.FileReaders;
+package javaFiler.service;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

@@ -1,14 +1,17 @@
-package javaFiler.strategy;
+package javaFiler.fileprocessor;
+
+import javaFiler.models.FileProcessor;
 
 import java.io.*;
 import java.nio.file.Files;
 
 public class RarFileProcessor implements FileProcessor {
-
     public static String RAR_EXECUTABLE_PATH = "C:\\Program Files\\WinRAR\\Rar.exe"; // Абсолютный путь к Rar.exe
+    private String archiveFilename;
 
     @Override
     public byte[] processFile(String content, String originalFilename) throws IOException {
+        archiveFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".rar";
 
         File tempFile = File.createTempFile("temp", ".txt");
         Files.write(tempFile.toPath(), content.getBytes());
@@ -40,7 +43,8 @@ public class RarFileProcessor implements FileProcessor {
     }
 
     @Override
-    public String getContentType() {
-        return "application/x-rar-compressed";
+    public String getFilename() {
+        return archiveFilename;
     }
+
 }

@@ -1,6 +1,6 @@
 package javaFiler;
 
-import javaFiler.strategy.ZipFileProcessor;
+import javaFiler.fileprocessor.ZipFileProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

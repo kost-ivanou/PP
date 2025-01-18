@@ -1,8 +1,8 @@
 package javaFiler;
 
-import javaFiler.service.ExpressionHandlers.AlgebraicExpressionsEvaluator;
-import javaFiler.service.ExpressionHandlers.DijkstraExpressionEvaluator;
-import javaFiler.service.ExpressionHandlers.JexlExpressionEvaluator;
+import javaFiler.expressioneval.AlgebraicExpressionsEvaluator;
+import javaFiler.expressioneval.DijkstraExpressionEvaluator;
+import javaFiler.expressioneval.JexlExpressionEvaluator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

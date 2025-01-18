@@ -1,6 +1,6 @@
 package javaFiler;
 
-import javaFiler.strategy.RarFileProcessor;
+import javaFiler.fileprocessor.RarFileProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

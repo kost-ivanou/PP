@@ -1,7 +1,7 @@
 package javaFiler.FileReaderTests;
 
 import com.github.junrar.exception.RarException;
-import javaFiler.service.FileReaders.XmlFileReader;
+import javaFiler.filereader.XmlFileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

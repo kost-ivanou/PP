@@ -1,9 +1,10 @@
-package javaFiler.service.FileReaders;
+package javaFiler.filereader;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.junrar.exception.RarException;
 import javaFiler.models.FileReader;
+import javaFiler.service.ArchiveUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;

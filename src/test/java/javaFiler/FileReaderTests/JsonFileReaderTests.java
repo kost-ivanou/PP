@@ -1,13 +1,10 @@
 package javaFiler.FileReaderTests;
 
 import com.github.junrar.exception.RarException;
-import javaFiler.service.FileReaders.JsonFileReader;
+import javaFiler.filereader.JsonFileReader;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;

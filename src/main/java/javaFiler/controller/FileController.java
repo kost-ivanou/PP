@@ -1,11 +1,12 @@
 package javaFiler.controller;
 
 import com.github.junrar.exception.RarException;
-import javaFiler.factory.FileReaderFactories.FileReaderFactory;
+import javaFiler.expressioneval.ExpressionEvaluatorFactory;
+import javaFiler.filereader.FileReaderFactory;
+import javaFiler.models.ExpressionEvaluator;
+import javaFiler.models.FileProcessor;
 import javaFiler.models.FileReader;
-import javaFiler.service.FileFactoryIdentifier;
-import javaFiler.service.StringProcessor;
-import javaFiler.strategy.*;
+import javaFiler.fileprocessor.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/api")
@@ -32,21 +30,31 @@ public class FileController {
             String originalFilename = file.getOriginalFilename();
             String contentType = file.getContentType();
 
-            StringProcessor expressionService = new StringProcessor();
-            FileFactoryIdentifier fileFactoryIdentifier = new FileFactoryIdentifier();
-            FileReaderFactory factory = fileFactoryIdentifier.IdentifyType(file);
-            if (factory == null) {
-                return ResponseEntity.badRequest().body("Unsupported format".getBytes(StandardCharsets.UTF_8));
-            }
+            ExpressionEvaluatorFactory expressionEvaluatorFactory= new ExpressionEvaluatorFactory();
 
-            FileReader reader = factory.createFileReader();
+            ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator();
+
+            FileReaderFactory readerFactory = new FileReaderFactory();
+
+            FileReader reader = readerFactory.createFileReader(file);
+
             String content = reader.readFile(file);
-            processedContent = expressionService.evaluateExpressions(content);
-            FileProcessingContext context = new FileProcessingContext();
-            byte[] outputBytes;
-            String archiveFilename;
 
-            switch (action) {
+            processedContent = expressionEvaluator.processExpressions(content);
+
+            FileProcessorFactory processorFactory = new FileProcessorFactory();
+
+            FileProcessor processor = processorFactory.createFileProcessor(action);
+            byte[] outputBytes;
+
+            outputBytes = processor.processFile(processedContent, originalFilename);
+            //TODO that it will be okay with all extensions(default, rar...)
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"" + processor.getFilename() + "\"")
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .body(outputBytes);
+
+            /*switch (action) {
                 case "zip":
                     context.setStrategy(new ZipFileProcessor());
                     context.setContentType("application/zip");
@@ -84,7 +92,7 @@ public class FileController {
                             .body(outputBytes);
                 default:
                     return ResponseEntity.badRequest().body("Invalid action".getBytes(StandardCharsets.UTF_8));
-            }
+            }*/
 
         } catch (IOException e) {
             e.printStackTrace();

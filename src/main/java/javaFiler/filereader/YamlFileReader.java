@@ -1,8 +1,9 @@
-package javaFiler.service.FileReaders;
+package javaFiler.filereader;
 
 
 import com.github.junrar.exception.RarException;
 import javaFiler.models.FileReader;
+import javaFiler.service.ArchiveUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

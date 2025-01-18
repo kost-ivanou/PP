@@ -1,10 +1,9 @@
 package javaFiler;
 
 import javaFiler.controller.FileController;
-import javaFiler.factory.FileReaderFactories.FileReaderFactory;
+import javaFiler.filereader.FileReaderFactory;
+import javaFiler.models.ExpressionEvaluator;
 import javaFiler.models.FileReader;
-import javaFiler.service.FileFactoryIdentifier;
-import javaFiler.service.StringProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,10 +28,7 @@ public class FileControllerTests {
     private MockMvc mockMvc;
 
     @Mock
-    private StringProcessor expressionService;
-
-    @Mock
-    private FileFactoryIdentifier fileTypeIdentifier;
+    private ExpressionEvaluator expressionService;
 
     @Mock
     private FileReaderFactory fileReaderFactory;
@@ -51,11 +47,9 @@ public class FileControllerTests {
     @Test
     public void uploadFile_Success() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "Hello World".getBytes());
-
-        when(fileTypeIdentifier.IdentifyType(file)).thenReturn(fileReaderFactory);
-        when(fileReaderFactory.createFileReader()).thenReturn(fileReader);
+        when(fileReaderFactory.createFileReader(file)).thenReturn(fileReader);
         when(fileReader.readFile(file)).thenReturn("Hello World");
-        when(expressionService.evaluateExpressions("Hello 2+5 World")).thenReturn("Hello 7 World"); // Обработка содержимого
+        when(expressionService.processExpressions("Hello 2+5 World")).thenReturn("Hello 7 World"); // Обработка содержимого
 
         mockMvc.perform(multipart("/api/upload")
                         .file(file))
@@ -69,7 +63,7 @@ public class FileControllerTests {
     public void uploadFile_UnsupportedFormat() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.xyz", "application/octet-stream", "Hello World".getBytes());
 
-        when(fileTypeIdentifier.IdentifyType(file)).thenReturn(null);
+        when(fileReaderFactory.createFileReader(file)).thenReturn(null);
 
         mockMvc.perform(multipart("/api/upload")
                         .file(file))
