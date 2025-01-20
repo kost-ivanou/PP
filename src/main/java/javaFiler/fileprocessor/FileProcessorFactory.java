@@ -1,26 +1,15 @@
 package javaFiler.fileprocessor;
 
-import javaFiler.models.FileProcessor;
+import javaFiler.interfaces.FileProcessor;
 
 
 public class FileProcessorFactory {
     FileProcessor processor;
-    public FileProcessor createFileProcessor(String fileProcessorType){
-        switch(fileProcessorType) {
-            case "zip":
-                processor = new ZipFileProcessor();
-                break;
-            case "rar":
-                processor = new RarFileProcessor();
-                break;
-            case "encrypt":
-                processor = new EncryptFileProcessor();
-                break;
-            case "defaultFile":
-                processor = new DefaultFileProcessor();
-                break;
-            default:
-                processor = null;
+    public FileProcessor createFileProcessor(boolean encrypt) throws Exception {
+        if (encrypt) {
+            processor = new EncryptFileProcessor();
+        } else  {
+            processor = new DefaultFileProcessor();
         }
         return processor;
     }

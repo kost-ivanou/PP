@@ -1,6 +1,6 @@
 package javaFiler.expressioneval;
 
-import javaFiler.models.ExpressionEvaluator;
+import javaFiler.interfaces.ExpressionEvaluator;
 
 import java.util.Random;
 

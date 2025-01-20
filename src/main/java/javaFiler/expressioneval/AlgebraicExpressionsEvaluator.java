@@ -1,6 +1,6 @@
 package javaFiler.expressioneval;
 
-import javaFiler.models.ExpressionEvaluator;
+import javaFiler.interfaces.ExpressionEvaluator;
 
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
@@ -49,7 +49,10 @@ public class AlgebraicExpressionsEvaluator implements ExpressionEvaluator {
                 double x = parseFactor();
                 for (;;) {
                     if      (eat('*')) x *= parseFactor(); // multiplication
-                    else if (eat('/')) x /= parseFactor(); // division
+                    else if (eat('/')){
+                        if (parseFactor()==0) throw new UnsupportedOperationException("Cannot divide by zero");
+                        x /= parseFactor(); // division
+                    }
                     else return x;
                 }
             }

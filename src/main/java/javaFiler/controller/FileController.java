@@ -1,11 +1,12 @@
 package javaFiler.controller;
 
-import com.github.junrar.exception.RarException;
+import javaFiler.dto.FileCompressingResult;
+import javaFiler.dto.FileDecompressingResult;
 import javaFiler.expressioneval.ExpressionEvaluatorFactory;
+import javaFiler.filecompressor.FileCompressorFactory;
+import javaFiler.filedecompressor.FileDecompressorFactory;
 import javaFiler.filereader.FileReaderFactory;
-import javaFiler.models.ExpressionEvaluator;
-import javaFiler.models.FileProcessor;
-import javaFiler.models.FileReader;
+import javaFiler.interfaces.*;
 import javaFiler.fileprocessor.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -24,35 +24,41 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<byte[]> uploadFile(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("action") String action) {
+            @RequestParam("action") String action,
+            @RequestParam("encrypt") boolean encrypt){
         try {
-            String processedContent;
             String originalFilename = file.getOriginalFilename();
             String contentType = file.getContentType();
+            // TODO: move factories to Singletons
 
-            ExpressionEvaluatorFactory expressionEvaluatorFactory= new ExpressionEvaluatorFactory();
 
-            ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator();
+            FileDecompressorFactory decompressorFactory = new FileDecompressorFactory();
+            FileDecompressor decompressor = decompressorFactory.createFileDecompressor(originalFilename);
+            FileDecompressingResult decompressedContent = decompressor.decompressData(file);
+
+            // TODO: decrypt with static method in readContent
 
             FileReaderFactory readerFactory = new FileReaderFactory();
+            FileReader reader = readerFactory.createFileReader(decompressedContent.getFilename());
+            String content = reader.readContent(decompressedContent.getContent());
 
-            FileReader reader = readerFactory.createFileReader(file);
-
-            String content = reader.readFile(file);
-
-            processedContent = expressionEvaluator.processExpressions(content);
+            ExpressionEvaluatorFactory expressionEvaluatorFactory= new ExpressionEvaluatorFactory();
+            ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.createExpressionEvaluator();
+            String processedContent = expressionEvaluator.processExpressions(content);
 
             FileProcessorFactory processorFactory = new FileProcessorFactory();
+            FileProcessor processor = processorFactory.createFileProcessor(encrypt);
+            String encryptedContent = processor.processFile(processedContent, decompressedContent.getFilename());
 
-            FileProcessor processor = processorFactory.createFileProcessor(action);
-            byte[] outputBytes;
+            FileCompressorFactory compressorFactory = new FileCompressorFactory();
+            FileCompressor compressor =  compressorFactory.createCompressorFactory(action);
+            FileCompressingResult compressedContent = compressor.compressData(encryptedContent, processor.getFilename());
 
-            outputBytes = processor.processFile(processedContent, originalFilename);
             //TODO that it will be okay with all extensions(default, rar...)
             return ResponseEntity.ok()
-                    .header("Content-Disposition", "attachment; filename=\"" + processor.getFilename() + "\"")
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(outputBytes);
+                    .header("Content-Disposition", "attachment; filename=\"" + compressedContent.getFilename() + "\"")
+                    .contentType(MediaType.parseMediaType(compressedContent.getContentType()))
+                    .body(compressedContent.getBytesContent());
 
             /*switch (action) {
                 case "zip":
@@ -94,12 +100,10 @@ public class FileController {
                     return ResponseEntity.badRequest().body("Invalid action".getBytes(StandardCharsets.UTF_8));
             }*/
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка обработки файла".getBytes(StandardCharsets.UTF_8));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unsupported format".getBytes(StandardCharsets.UTF_8));
 
-        } catch (RarException e) {
-            throw new RuntimeException(e);
         }
     }
 }

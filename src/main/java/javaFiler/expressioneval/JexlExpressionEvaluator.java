@@ -1,6 +1,6 @@
 package javaFiler.expressioneval;
 
-import javaFiler.models.ExpressionEvaluator;
+import javaFiler.interfaces.ExpressionEvaluator;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;

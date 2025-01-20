@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         const fileInput = document.getElementById('fileInput');
         const action = document.querySelector('input[name="action"]:checked').value;
+        const encrypt = document.getElementById('encryptCheckbox').checked;
 
         if (fileInput.files.length > 0) {
             formData.append('file', fileInput.files[0]);
             formData.append('action', action);
+            formData.append('encrypt', encrypt);
 
             fetch('/api/upload', {
                 method: 'POST',
@@ -30,8 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     a.download = 'processed_' + originalFilename + '.zip';
                 } else if (action === 'rar') {
                     a.download = 'processed_' + originalFilename + '.rar';
-                } else if (action === 'encrypt') {
-                    a.download = 'processed_' + originalFilename; // Шифрование без расширения
                 } else {
                     a.download = 'processed_' + originalFilename; // Обработанный файл
                 }

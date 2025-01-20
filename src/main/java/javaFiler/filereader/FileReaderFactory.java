@@ -1,37 +1,40 @@
 package javaFiler.filereader;
 
 
-import javaFiler.models.FileReader;
+
+import com.github.junrar.exception.RarException;
+
+import javaFiler.interfaces.FileReader;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.IOException;
+
+
 public class FileReaderFactory {
-    FileReader reader;
-    public FileReader createFileReader(MultipartFile file){
-        String contentType = file.getContentType();
-        String filename = file.getOriginalFilename();
+    public FileReader createFileReader(String filename) throws IOException, RarException {
+        return determineFileReaderByExtension(getFileExtension(filename));
+    }
 
-        boolean isExtensionYaml = filename != null && (filename.endsWith(".yaml") || filename.endsWith(".yml"));
+    private FileReader determineFileReaderByExtension(String extension) {
+        if (extension != null) {
+            return switch (extension.toLowerCase()) {
+                case "yaml", "yml" -> new YamlFileReader();
+                case "json" -> new JsonFileReader();
+                case "xml" -> new XmlFileReader();
+                case "txt" -> new TxtFileReader();
+                default -> null;
+            };
+        }
+        return null;
+    }
 
-        if(isExtensionYaml){
-            reader = new YamlFileReader();
-            return reader;
+    private static String getFileExtension(String filename) {
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < filename.length() - 1) {
+            return filename.substring(dotIndex + 1);
         }
-        switch (contentType) {
-            case "application/json":
-            case "text/json":
-                reader = new JsonFileReader();
-                break;
-            case "application/xml":
-            case "text/xml":
-                reader= new XmlFileReader();
-                break;
-            case "text/plain":
-                reader = new TxtFileReader();
-                break;
-            default:
-                return null;
-        }
-        return reader;
+        return null;
     }
 }
 

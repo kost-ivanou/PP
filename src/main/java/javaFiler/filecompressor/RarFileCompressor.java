@@ -1,19 +1,19 @@
-package javaFiler.fileprocessor;
+package javaFiler.filecompressor;
 
-import javaFiler.models.FileProcessor;
+import javaFiler.dto.FileCompressingResult;
+import javaFiler.interfaces.FileCompressor;
 
 import java.io.*;
 import java.nio.file.Files;
 
-public class RarFileProcessor implements FileProcessor {
+public class RarFileCompressor implements FileCompressor {
     public static String RAR_EXECUTABLE_PATH = "C:\\Program Files\\WinRAR\\Rar.exe"; // Абсолютный путь к Rar.exe
-    private String archiveFilename;
 
     @Override
-    public byte[] processFile(String content, String originalFilename) throws IOException {
-        archiveFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".rar";
+    public FileCompressingResult compressData(String content, String originalFilename) throws IOException {
+        String archiveFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".rar";
 
-        File tempFile = File.createTempFile("temp", ".txt");
+        File tempFile = File.createTempFile("processed_"+originalFilename, "");
         Files.write(tempFile.toPath(), content.getBytes());
 
         String rarFilename = "processed_" + originalFilename.replaceFirst("[.][^.]+$", "") + ".rar";
@@ -39,12 +39,8 @@ public class RarFileProcessor implements FileProcessor {
         tempFile.delete();
         rarFile.delete();
 
-        return rarBytes;
+        return new FileCompressingResult(archiveFilename, rarBytes);
     }
 
-    @Override
-    public String getFilename() {
-        return archiveFilename;
-    }
 
 }
