@@ -21,11 +21,11 @@ public class RarFileProcessorTest {
 
     private RarFileCompressor rarFileProcessor;
     // TODO
-    /*@Before
+    /*
+    @Before
     public void setUp() {
         rarFileProcessor = new RarFileCompressor();
     }
-
     @Test
     public void testProcessFileFailure() throws Exception {
         // Mock the Process to simulate an error

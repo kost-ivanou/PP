@@ -60,7 +60,7 @@ public class FileControllerTests {
         MockitoAnnotations.openMocks(this);
     }
     // TODO
-    /*@Test
+    @Test
     public void uploadFile_Success() throws Exception {
         // Mocking the input file
         MockMultipartFile file = new MockMultipartFile("file", "test.zip", "application/zip", "Hello 2+5 World".getBytes());
@@ -98,7 +98,7 @@ public class FileControllerTests {
                 .andExpect(header().string("Content-Disposition", "attachment; filename=\"compressed_test.zip\""))
                 .andExpect(content().contentType("application/zip"))
                 .andExpect(content().bytes("Compressed content".getBytes())); // Check for the processed content
-    }*/
+    }
     @Test
     public void uploadFile_UnsupportedFormat() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.xyz", "application/octet-stream", "Hello World".getBytes());

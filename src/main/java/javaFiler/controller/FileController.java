@@ -4,7 +4,7 @@ import javaFiler.dto.FileCompressingResult;
 import javaFiler.dto.FileDecompressingResult;
 import javaFiler.expressioneval.ExpressionEvaluatorFactory;
 import javaFiler.filecompressor.FileCompressorFactory;
-import javaFiler.filedecompressor.Decryptor;
+import javaFiler.decryptor.Decryptor;
 import javaFiler.filedecompressor.FileDecompressorFactory;
 import javaFiler.filereader.FileReaderFactory;
 import javaFiler.interfaces.*;
@@ -29,15 +29,11 @@ public class FileController {
             @RequestParam("encrypt") boolean encrypt){
         try {
             String originalFilename = file.getOriginalFilename();
-            String contentType = file.getContentType();
             // TODO: move factories to Singletons
-
 
             FileDecompressorFactory decompressorFactory = new FileDecompressorFactory();
             FileDecompressor decompressor = decompressorFactory.createFileDecompressor(originalFilename);
             FileDecompressingResult decompressedContent = decompressor.decompressData(file);
-
-            // TODO: decrypt with static method in readContent
 
             FileReaderFactory readerFactory = new FileReaderFactory();
             FileReader reader = readerFactory.createFileReader(decompressedContent.getFilename());
